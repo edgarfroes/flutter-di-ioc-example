@@ -1,0 +1,14 @@
+import 'package:flutter/material.dart';
+
+import 'form.dart';
+
+class Screen1 extends StatelessWidget {
+  const Screen1({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Form1(
+      userId: '123',
+    );
+  }
+}
