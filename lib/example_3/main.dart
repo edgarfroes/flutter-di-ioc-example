@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
 }
 
 void injectDependencies() {
-  // Use GetIt to register this service.
+  // Use GetIt to register this service's implementation.
+  // Note that it's injecting to an interface.
   GetIt.I.registerSingleton<UserDatabaseService>(UserDatabaseServiceImpl());
 }
