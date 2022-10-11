@@ -7,15 +7,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
+import 'package:ioc_example/example_3/screen.dart';
 import 'package:ioc_example/models/user.dart';
-import 'package:ioc_example/example_2/screen.dart';
 import 'package:ioc_example/services/user_database_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'screen_right_test.mocks.dart';
+import 'example3_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<UserDatabaseService>()])
+@GenerateNiceMocks([
+  MockSpec<UserDatabaseService>(),
+])
 void main() {
   const userId = '123';
   const oldUserName = 'name';
@@ -27,15 +30,17 @@ void main() {
   );
 
   testWidgets(
-    'Right Screen Test',
+    'Example 3 Screen - Dependency Injection',
     (WidgetTester tester) async {
+      // Inject service.
+      GetIt.I.registerSingleton<UserDatabaseService>(mockService);
+
       when(mockService.get(userId: userId)).thenReturn(mockUser);
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Screen2(
+        const MaterialApp(
+          home: Screen3(
             userId: userId,
-            dbService: mockService,
           ),
         ),
       );
@@ -61,4 +66,8 @@ void main() {
       )).called(1);
     },
   );
+}
+
+abstract class SubmitTest {
+  void onSubmit(String name);
 }

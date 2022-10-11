@@ -8,17 +8,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ioc_example/example_2/form.dart';
+import 'package:ioc_example/example_2/screen.dart';
+import 'package:ioc_example/models/user.dart';
+import 'package:ioc_example/services/user_database_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'form_right_test.mocks.dart';
+import 'example2_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<SubmitTest>()])
+@GenerateNiceMocks([
+  MockSpec<SubmitTest>(),
+  MockSpec<UserDatabaseService>(),
+])
 void main() {
+  const userId = '123';
+  const oldUserName = 'name';
+  const newUserName = 'Aegon Targaryen';
+  final mockService = MockUserDatabaseService();
+  final mockUser = User(
+    id: userId,
+    name: oldUserName,
+  );
   final mockSubmitTest = MockSubmitTest();
 
   testWidgets(
-    'Right Form Test',
+    'Example 2 Form Test',
     (WidgetTester tester) async {
       const name = 'Aegon Targaryen';
 
@@ -42,6 +56,42 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(mockSubmitTest.onSubmit(name)).called(1);
+    },
+  );
+
+  testWidgets(
+    'Example 2 Screen Test',
+    (WidgetTester tester) async {
+      when(mockService.get(userId: userId)).thenReturn(mockUser);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Screen2(
+            userId: userId,
+            dbService: mockService,
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      verify(mockService.get(userId: userId)).called(1);
+
+      verifyNever(
+        mockService.saveUserName(
+          id: userId,
+          name: newUserName,
+        ),
+      );
+
+      await tester.tap(find.byType(MaterialButton));
+
+      await tester.pumpAndSettle();
+
+      verify(mockService.saveUserName(
+        id: userId,
+        name: newUserName,
+      )).called(1);
     },
   );
 }
