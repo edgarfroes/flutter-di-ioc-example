@@ -35,7 +35,7 @@ class _Screen3State extends State<Screen3> {
 
   @override
   Widget build(BuildContext context) {
-// This form might be the same on Example 2, since it's already refactored.
+    // This form might be the same on Example 2, since it's already refactored.
     return Form2(
       currentName: user.name,
       onSubmit: (String newName) {
